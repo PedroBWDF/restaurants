@@ -28,6 +28,13 @@ app.get('/restaurant/:id', (req, res) => {
   res.send(`read restaurant: ${id}`)
 })
 
+//根據express官方文件設計動態路由
+app.get('/restaurant/:id', (req, res) => {
+  const id = req.params.id
+  const restaurant = restaurants.find((rest) => rest.id.toString() === id)
+  res.render('detail', { restaurant })
+})
+
 app.listen(port, () => {
   console.log(`express server is running on http://localhost:${port}`)
 })
