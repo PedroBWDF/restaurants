@@ -34,5 +34,4 @@ npm install  # 安裝套件
 ```bash
 npm run dev
 ```
-請開啟瀏覽器輸入 [http://localhost:3000]
-(http://localhost:3000) 執行
+請開啟瀏覽器輸入 [http://localhost:3000] 執行
