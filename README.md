@@ -23,11 +23,11 @@ Node.js
 ## Installation 安裝
 開啟終端機(Terminal)並進到專案路徑，執行以下指令：
 ```bash
-git clone https://github.com/PedroBWDF/Restaurant.git
+git clone https://github.com/PedroBWDF/restaurants.git
 ```
 初始
 ```bash
-cd Restaurant  # 切至專案資料夾
+cd restaurants  # 切至專案資料夾
 npm install  # 安裝套件
 ```
 執行程式
