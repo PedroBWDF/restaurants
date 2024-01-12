@@ -20,15 +20,21 @@ app.get('/', (req, res) => {
 })
 
 app.get('/restaurants', (req, res) => {
-  res.render('index', { restaurants: restaurants })
+  const keyword = req.query.keyword
+  const matchedRests = keyword ? restaurants.filter((rest) =>
+    rest.name.toLowerCase().includes(keyword.toLowerCase()) || rest.category.toLowerCase().includes(keyword.toLowerCase()))
+    : restaurants
+  res.render('index', { restaurants: matchedRests, keyword })
 })
+
 
 app.get('/restaurant/:id', (req, res) => {
   const id = req.params.id
-  res.send(`read restaurant: ${id}`)
+  const restaurant = restaurants.find((rest) => rest.id.toString() === id)
+  res.render('detail', { restaurant })
 })
 
-//根據express官方文件設計動態路由
+//根據express官方文件設計動態路由，並取得id以渲染特定餐廳詳細資料
 app.get('/restaurant/:id', (req, res) => {
   const id = req.params.id
   const restaurant = restaurants.find((rest) => rest.id.toString() === id)
