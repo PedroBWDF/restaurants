@@ -12,6 +12,30 @@ module.exports = {
       name: {
         type: Sequelize.STRING
       },
+      name_en: {
+        type: Sequelize.STRING
+      },
+      category: {
+        type: Sequelize.STRING
+      },
+      image: {
+        type: Sequelize.STRING
+      },
+      location: {
+        type: Sequelize.STRING
+      },
+      phone: {
+        type: Sequelize.STRING
+      },
+      google_map: {
+        type: Sequelize.STRING
+      },
+      rating: {
+        type: Sequelize.FLOAT
+      },
+      description: {
+        type: Sequelize.STRING
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
