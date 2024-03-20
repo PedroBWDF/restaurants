@@ -14,6 +14,7 @@ const Restaurant = db.Restaurant
 app.engine('.hbs', engine({ extname: '.hbs' }))
 app.set('view engine', '.hbs');
 app.set('views', './views');
+app.use(express.urlencoded({ extended: true }))
 
 //根據express文件，載入餐廳json靜態資料
 app.use(express.static('public'))
@@ -30,14 +31,60 @@ app.get('/', (req, res) => {
 //   res.render('index', { restaurants: matchedRests, keyword })
 // })
 
+// app.get('/restaurants', (req, res) => {
+//   return Restaurant.findAll({
+//     raw: true //讓資料庫回傳資料時不會被包在dataValue的instance裡面，而是回傳js物件(官方文件說明)
+//   })
+//     .then((restaurants) => 
+//     res.render('index', { restaurants })) //restaurants為渲染模板時用的名稱
+//     .catch((err) => res.status(422).json(err))
+// })
+
+// app.get('/restaurants', (req, res) => {
+//   const keyword = req.query.keyword
+//   const matchedRests = keyword ? Restaurant.findall({ 
+//     where:{
+//       name: keyword,
+//       category: keyword
+//     } })((rest) =>
+//     rest.name.toLowerCase().includes(keyword.toLowerCase()) || rest.category.toLowerCase().includes(keyword.toLowerCase()))
+//     : restaurants
+//   res.render('index', { restaurants: matchedRests, keyword })
+// })
+
+const { Op } = require('sequelize');
+
 app.get('/restaurants', (req, res) => {
-  return Restaurant.findAll({
-    raw: true //讓資料庫回傳資料時不會被包在dataValue的instance裡面，而是回傳js物件(官方文件說明)
-  })
-    .then((restaurants) => 
-    res.render('index', { restaurants })) //restaurants為渲染模板時用的名稱
-    .catch((err) => res.status(422).json(err))
-})
+  const keyword = req.query.keyword //使用query方法取得搜尋欄的關鍵字
+
+  let matchedRestaurantsPromise;
+
+  if (keyword) {
+    matchedRestaurantsPromise = Restaurant.findAll({
+      where: {
+        [Op.or]: [
+          { name: { [Op.like]: `%${keyword}%` } },
+          { category: { [Op.like]: `%${keyword}%` } }
+        ]
+      }, //sequelize官方文件有針對Op.or和Op.like說明
+      raw: true
+    });
+  } else {
+    matchedRestaurantsPromise = Restaurant.findAll({ raw: true });
+  }
+
+  matchedRestaurantsPromise
+    .then((matchedRestaurants) => {
+      res.render('index', { restaurants: matchedRestaurants, keyword });
+    }) // restaurants和keyword為渲染模板時用的名稱，可見index.hbs檔案
+    .catch((error) => {
+      console.error('Error fetching restaurants:', error);
+      res.status(500).send('Error fetching restaurants');
+    });
+});
+
+
+
 
 
 // //根據express官方文件設計動態路由，並取得id以渲染特定餐廳詳細資料
@@ -47,9 +94,24 @@ app.get('/restaurants', (req, res) => {
 //   res.render('detail', { restaurant })
 // })
 
+app.get('/restaurants/new', (req, res) => {
+  return res.render('new')
+})
+
+app.post('/restaurants', (req, res) => {
+  const name = req.body.name
+  const category = req.body.category
+  const location = req.body.location
+  const phone = req.body.phone
+
+  return Restaurant.create({ name, category, location, phone })
+    .then(() => res.redirect('/restaurants'))
+    .catch((err) => console.log(err))
+})
+
 app.get('/restaurant/:id', (req, res) => {
   const id = req.params.id
-  return Restaurant.findByPk(id, { raw: true })
+  return Restaurant.findByPk(id, { raw: true }) //有沒有return都可，but why?
     .then((restaurant) => { //findByPk查詢到的資料會被作為參數傳遞到.then的callback function
       if(!restaurant) {
         res.status(404).send('Restaurant not found')
