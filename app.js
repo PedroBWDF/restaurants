@@ -155,6 +155,13 @@ app.put('/restaurants/:id', (req, res) => {
   .then(() => res.redirect(`/restaurants/${id}`))
 })
 
+app.delete('/restaurants/:id', (req, res) => {
+  const id = req.params.id
+
+  return Restaurant.destroy({ where: { id } })
+    .then(() => res.redirect('/restaurants'))
+})
+
 app.listen(port, () => {
   console.log(`express server is running on http://localhost:${port}`)
 })

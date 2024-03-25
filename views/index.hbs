@@ -70,7 +70,9 @@
             <div class="btn-group mr-5">
               <a href="/restaurants/{{restaurant.id}}" class="btn btn-info btn-sm">Detail</a>
               <a href="/restaurants/{{restaurant.id}}/edit" class="btn btn-primary btn-sm">Edit</a>
-              <a href="#" class="btn btn-danger btn-sm">Delete</a>
+              <form action="/restaurants/{{restaurant.id}}?_method=DELETE" method="POST" style="display: inline;">
+                <button type="submit">delete</button>
+              </form>
             </div>
           </div>
         </div>
