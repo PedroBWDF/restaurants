@@ -1,0 +1,9 @@
+<form action="/restaurants/{{restaurant.id}}?_method=PUT" method="POST">
+  <input type="text" placeholder="please input name" name="name" value="{{restaurant.name}}">
+  <input type="text" placeholder="please input category" name="category" value="{{restaurant.category}}">
+  <input type="text" placeholder="please input location" name="location" value="{{restaurant.location}}">
+  <input type="text" placeholder="please input phone" name="phone" value="{{restaurant.phone}}">
+  <input type="text" placeholder="please input image URL" name="image" value="{{restaurant.image}}">
+  <button type="submit">Save</button>
+  <a href="/restaurants">back</a>
+</form>

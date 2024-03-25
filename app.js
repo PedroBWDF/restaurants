@@ -2,6 +2,7 @@ const express = require('express')
 const { engine } = require('express-handlebars')
 const app = express()
 const port = 3000
+const methodOverride = require('method-override')
 // const restaurants = require('./public/jsons/restaurant.json').results
 
 const db = require('./models')
@@ -14,7 +15,9 @@ const Restaurant = db.Restaurant
 app.engine('.hbs', engine({ extname: '.hbs' }))
 app.set('view engine', '.hbs');
 app.set('views', './views');
+
 app.use(express.urlencoded({ extended: true }))
+app.use(methodOverride('_method'))
 
 //根據express文件，載入餐廳json靜態資料
 app.use(express.static('public'))
@@ -99,27 +102,57 @@ app.get('/restaurants/new', (req, res) => {
 })
 
 app.post('/restaurants', (req, res) => {
-  const name = req.body.name
+  const name = req.body.name //利用req.body拿到POST方法傳過來的資料，會是一個物件，name為key、value為值
   const category = req.body.category
   const location = req.body.location
   const phone = req.body.phone
+  const image = req.body.image
 
-  return Restaurant.create({ name, category, location, phone })
+  return Restaurant.create({ name, category, location, phone, image })
     .then(() => res.redirect('/restaurants'))
     .catch((err) => console.log(err))
 })
 
-app.get('/restaurant/:id', (req, res) => {
+app.get('/restaurants/:id', (req, res) => {
   const id = req.params.id
-  return Restaurant.findByPk(id, { raw: true }) //有沒有return都可，but why?
+  return Restaurant.findByPk(id, {
+    attributes: ['id', 'name', 'category', 'location', 'phone', 'image'],
+    raw: true 
+  }) //有沒有return都可，but why?
     .then((restaurant) => { //findByPk查詢到的資料會被作為參數傳遞到.then的callback function
-      if(!restaurant) {
+      if (!restaurant) {
         res.status(404).send('Restaurant not found')
       }
       res.render('detail', { restaurant }) //restaurant為渲染模板時用的名稱
     })
 
     .catch((err) => res.status(422).json(err))
+})
+
+app.get('/restaurants/:id/edit', (req, res) => {
+  const id = req.params.id
+  return Restaurant.findByPk(id, { 
+    attributes: ['id', 'name', 'category', 'location', 'phone', 'image'],
+  raw: true 
+}) //有沒有return都可，but why?
+    .then((restaurant) => { //findByPk查詢到的資料會被作為參數傳遞到.then的callback function
+      if (!restaurant) {
+        res.status(404).send('Restaurant not found')
+      }
+      res.render('edit', { restaurant }) //restaurant為渲染模板時用的名稱
+    })
+
+    .catch((err) => res.status(422).json(err))
+})
+
+app.put('/restaurants/:id', (req, res) => {
+  const id = req.params.id
+  const body = req.body
+
+  Restaurant.update({ name: body.name, category: body.category, location: body.location, phone: body.phone, image: body.image }, {
+    where: { id }
+  })
+  .then(() => res.redirect(`/restaurants/${id}`))
 })
 
 app.listen(port, () => {
