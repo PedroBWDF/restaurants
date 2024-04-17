@@ -9,7 +9,7 @@ const restaurants = require('./restaurants')
 router.use('/restaurants', restaurants)
 
 router.get('/', (req, res) => {
-  res.render('index')
+  res.redirect('/restaurants')
 })
 
 // 匯出路由器
