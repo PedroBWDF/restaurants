@@ -35,9 +35,30 @@
             <option>地區</option>
           </select>
         </div> --}}
+        {{!-- <form action="/restaurants" method="GET" style="display: inline;">
+          <select class="form-select" name="sort" aria-label="Default select example" onchange="this.form.submit()">
+            <option value="name_asc" {{#if sort1}} selected {{/if}}>A -> Z</option>
+            <option value="name_desc" {{#if sort2}} selected {{/if}}>Z -> A</option>
+            <option value="category" {{#if sort3}} selected {{/if}}>類別</option>
+            <option value="location" {{#if sort4}} selected {{/if}}>地區</option>
+          </select>
+        </form> --}}
       </form>
     </div>
   </div>
+</div>
+
+<div style="display: flex; justify-content: flex-end; margin-right: 290px;">
+  <form action="/restaurants" method="GET" style="display: inline;">
+  {{!-- onchange表示點選，form就自動提交 --}}
+    <select class="form-select" name="sort" aria-label="Default select example" onchange="this.form.submit()"
+      style="width: 200px;">
+      <option value="name_asc" {{#if sort1}} selected {{/if}}>A -> Z</option>
+      <option value="name_desc" {{#if sort2}} selected {{/if}}>Z -> A</option>
+      <option value="category" {{#if sort3}} selected {{/if}}>類別</option>
+      <option value="location" {{#if sort4}} selected {{/if}}>地區</option>
+    </select>
+  </form>
 </div>
 
 <!-- 放上create button -->
@@ -52,40 +73,40 @@
     </div>
   </div>
 
-{{!-- restaurants list --}}
-<div class="container mt-5">
-  <div class="row">
-    <div class="col-md-10 col-12 mx-auto">
-      <div class="row row-cols-sm-3">
-        {{#each restaurants as |restaurant|}}
-        <div class="card mb-3">
-          <a href="/restaurants/{{restaurant.id}}" class="text-secondary card-link">
-            <img class="card-img-top" src="{{restaurant.image}}" alt="{{restaurant.name}}">
-            <div class="card-body p-3">
-              <h6 class="card-title mb-1">{{restaurant.name}}</h6>
+  {{!-- restaurants list --}}
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col-md-10 col-12 mx-auto">
+        <div class="row row-cols-sm-3">
+          {{#each restaurants as |restaurant|}}
+          <div class="card mb-3">
+            <a href="/restaurants/{{restaurant.id}}" class="text-secondary card-link">
+              <img class="card-img-top" src="{{restaurant.image}}" alt="{{restaurant.name}}">
+              <div class="card-body p-3">
+                <h6 class="card-title mb-1">{{restaurant.name}}</h6>
 
-              <div class="restaurant-category mb-1">
-                <i class="fas fa-utensils pr-2"></i> {{restaurant.category}}
+                <div class="restaurant-category mb-1">
+                  <i class="fas fa-utensils pr-2"></i> {{restaurant.category}}
+                </div>
+
+                <span class="badge rounded-pill bg-danger font-weight-normal">
+                  4.1
+                  <i class="fas fa-star fa-xs"></i>
+                </span>
               </div>
-
-              <span class="badge rounded-pill bg-danger font-weight-normal">
-                4.1
-                <i class="fas fa-star fa-xs"></i>
-              </span>
-            </div>
-          </a>
-          <div class="card-footer d-flex justify-content-end">
-            <div class="btn-group mr-5">
-              <a href="/restaurants/{{restaurant.id}}" class="btn btn-info btn-sm">Detail</a>
-              <a href="/restaurants/{{restaurant.id}}/edit" class="btn btn-primary btn-sm">Edit</a>
-              <form action="/restaurants/{{restaurant.id}}?_method=DELETE" method="POST" style="display: inline;">
-                <button type="submit">delete</button>
-              </form>
+            </a>
+            <div class="card-footer d-flex justify-content-end">
+              <div class="btn-group mr-5">
+                <a href="/restaurants/{{restaurant.id}}" class="btn btn-info btn-sm">Detail</a>
+                <a href="/restaurants/{{restaurant.id}}/edit" class="btn btn-primary btn-sm">Edit</a>
+                <form action="/restaurants/{{restaurant.id}}?_method=DELETE" method="POST" style="display: inline;">
+                  <button type="submit">delete</button>
+                </form>
+              </div>
             </div>
           </div>
+          {{/each}}
         </div>
-        {{/each}}
       </div>
     </div>
   </div>
-</div>

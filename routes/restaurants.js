@@ -7,36 +7,70 @@ const Restaurant = db.Restaurant
 const { Op } = require('sequelize');
 
 router.get('/', (req, res) => {
-  //使用query方法取得搜尋欄的關鍵字
-  const keyword = req.query.keyword
+  try {
+    const keyword = req.query.keyword
+    const sort = req.query.sort
+    let sort1 = 0
+    let sort2 = 0
+    let sort3 = 0
+    let sort4 = 0
 
-  let matchedRestaurantsPromise;
+    //若被選中，賦值1 (index.hbs有定義是否被選中)
+    if (sort === 'name_asc') {
+      sort1 = 1
+    } else if (sort === 'name_desc') {
+      sort2 = 1
+    } else if (sort === 'category') {
+      sort3 = 1
+    } else if (sort === 'location') {
+      sort4 = 1
+    }
 
-  if (keyword) {
-    //sequelize官方文件有針對Op.or和Op.like說明
-    matchedRestaurantsPromise = Restaurant.findAll({
-      where: {
-        [Op.or]: [
-          { name: { [Op.like]: `%${keyword}%` } },
-          { category: { [Op.like]: `%${keyword}%` } }
-        ]
-      }, 
-      raw: true
-    });
-  } else {
-    matchedRestaurantsPromise = Restaurant.findAll({ raw: true });
+    // sequelize官方文件order定義
+    const sortOptions = {
+      name_asc: [['name', 'ASC']],
+      name_desc: [['name', 'DESC']],
+      category: [['category', 'ASC']],
+      location: [['location', 'ASC']]
+    }
+
+    let restaurantsPromise
+
+    // 如果有搜尋關鍵字
+    if (keyword) {
+      restaurantsPromise = Restaurant.findAll({
+        where: {
+          [Op.or]: [
+            { name: { [Op.like]: `%${keyword}%` } },
+            { category: { [Op.like]: `%${keyword}%` } }
+          ]
+        },
+        raw: true
+      })
+    } else {
+      restaurantsPromise = Restaurant.findAll({
+        //sequelize提供的排序方法
+        order: sortOptions[sort],
+        raw: true });
+    }
+
+    restaurantsPromise.then((restaurants) => {
+      res.render('index', {
+        restaurants, keyword,
+        sort1,
+        sort2,
+        sort3,
+        sort4 })
+    })
+      .catch((error) => {
+        console.error('Error fetching restaurants:', error)
+        res.status(500).send('Error fetching restaurants')
+      })
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).send('Server Error');
   }
-
-  matchedRestaurantsPromise
-    .then((matchedRestaurants) => {
-      // restaurants和keyword為渲染模板時用的名稱，可見index.hbs檔案
-      res.render('index', { restaurants: matchedRestaurants, keyword });
-    }) 
-    .catch((error) => {
-      console.error('Error fetching restaurants:', error);
-      res.status(500).send('Error fetching restaurants');
-    });
-});
+})
 
 
 router.get('/new', (req, res) => {
