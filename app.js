@@ -7,6 +7,7 @@ const port = 3000
 const methodOverride = require('method-override')
 // 引用路由器
 const router = require('./routes')
+const passport = require('passport')
 const messageHandler = require('./middlewares/message-handler')
 const errorHandler = require('./middlewares/error-handler')
 
@@ -26,6 +27,7 @@ app.use(session({
   saveUninitialized: false
 }))
 app.use(flash())
+app.use(passport.initialize())
 app.use(messageHandler)
 
 //根據express文件，載入餐廳json靜態資料
