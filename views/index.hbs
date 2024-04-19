@@ -7,6 +7,7 @@
         <img src="https://assets-lighthouse.s3.amazonaws.com/uploads/image/file/6227/restaurant-list-logo.png"
           width="30" height="30" class="d-inline-block align-top" alt="我的餐廳清單">
         我的餐廳清單
+        {{> message}}
       </a>
     </div>
   </nav>
@@ -50,7 +51,7 @@
 
 <div style="display: flex; justify-content: flex-end; margin-right: 290px;">
   <form action="/restaurants" method="GET" style="display: inline;">
-  {{!-- onchange表示點選，form就自動提交 --}}
+    {{!-- onchange表示點選，form就自動提交 --}}
     <select class="form-select" name="sort" aria-label="Default select example" onchange="this.form.submit()"
       style="width: 200px;">
       <option value="name_asc" {{#if sort1}} selected {{/if}}>A -> Z</option>

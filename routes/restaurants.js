@@ -7,7 +7,6 @@ const Restaurant = db.Restaurant
 const { Op } = require('sequelize');
 
 router.get('/', (req, res) => {
-  try {
     const keyword = req.query.keyword
     const sort = req.query.sort
     let sort1 = 0
@@ -51,25 +50,24 @@ router.get('/', (req, res) => {
       restaurantsPromise = Restaurant.findAll({
         //sequelize提供的排序方法
         order: sortOptions[sort],
-        raw: true });
+        raw: true
+      });
     }
 
-    restaurantsPromise.then((restaurants) => {
+    restaurantsPromise
+    .then((restaurants) => {
       res.render('index', {
         restaurants, keyword,
         sort1,
         sort2,
         sort3,
-        sort4 })
+        sort4
+      })
     })
       .catch((error) => {
-        console.error('Error fetching restaurants:', error)
-        res.status(500).send('Error fetching restaurants')
+        error.errorMessage = '資料取得失敗:('
+        next(error)
       })
-  } catch (error) {
-    console.error('Error:', error);
-    res.status(500).send('Server Error');
-  }
 })
 
 
@@ -82,8 +80,15 @@ router.post('/', (req, res) => {
   const { name, category, location, phone, image } = req.body
 
   return Restaurant.create({ name, category, location, phone, image })
-    .then(() => res.redirect('/restaurants'))
-    .catch((err) => console.log(err))
+    .then(() => {
+      req.flash('success', '成功新增餐廳了!')
+      res.redirect('/restaurants')
+    })
+    .catch((err) => {
+      console.log(err)
+      error.errorMessage = '新增失敗:('
+      next(error)
+    })
 })
 
 router.get('/:id', (req, res) => {
@@ -91,17 +96,20 @@ router.get('/:id', (req, res) => {
   return Restaurant.findByPk(id, {
     attributes: ['id', 'name', 'category', 'location', 'phone', 'image'],
     raw: true
-  }) 
+  })
     //findByPk查詢到的資料會被作為參數傳遞到.then的callback function
-    .then((restaurant) => { 
+    .then((restaurant) => {
       if (!restaurant) {
         res.status(404).send('Restaurant not found')
       }
       //restaurant為渲染模板時用的名稱
-      res.render('detail', { restaurant }) 
+      res.render('detail', { restaurant })
     })
 
-    .catch((err) => res.status(422).json(err))
+    .catch((error) =>{
+      error.errorMessage = '資料取得失敗:('
+      next(error)
+    })
 })
 
 router.get('/:id/edit', (req, res) => {
@@ -111,15 +119,18 @@ router.get('/:id/edit', (req, res) => {
     raw: true
   })
     //findByPk查詢到的資料會被作為參數傳遞到.then的callback function
-    .then((restaurant) => { 
+    .then((restaurant) => {
       if (!restaurant) {
         res.status(404).send('Restaurant not found')
       }
       //restaurant為渲染模板時用的名稱
-      res.render('edit', { restaurant }) 
+      res.render('edit', { restaurant })
     })
 
-    .catch((err) => res.status(422).json(err))
+    .catch((error) => {
+      error.errorMessage = '資料取得失敗:('
+      next(error)
+    })
 })
 
 router.put('/:id', (req, res) => {
@@ -130,18 +141,30 @@ router.put('/:id', (req, res) => {
   Restaurant.update({ name, category, location, phone, image }, {
     where: { id }
   })
-    .then(() => res.redirect(`/restaurants/${id}`))
+    .then(() => {
+      req.flash('success', '成功更新餐廳資料!')
+      res.redirect(`/restaurants/${id}`)
+    })
 
-    .catch((err) => res.status(422).json(err))
+    .catch((error) => {
+      error.errorMessage = '資料取得失敗:('
+      next(error)
+    })
 })
 
 router.delete('/:id', (req, res) => {
   const id = req.params.id
 
   return Restaurant.destroy({ where: { id } })
-    .then(() => res.redirect('/restaurants'))
+    .then(() => {
+      req.flash('success', '餐廳資料已被刪除!')
+      res.redirect('/restaurants')
+    })
 
-    .catch((err) => res.status(422).json(err))
+    .catch((error) => {
+      error.errorMessage = '資料取得失敗:('
+      next(error)
+    })
 })
 
 module.exports = router
