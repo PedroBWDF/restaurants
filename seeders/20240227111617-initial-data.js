@@ -145,8 +145,8 @@ const restaurantData = require('../public/jsons/restaurant.json').results //取�
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.bulkInsert('Restaurants', restaurantData.map(restaurant => ({ ...restaurant, createdAt: new Date(), updatedAt: new Date() })))
     //把初始json檔資料展開，再一一放入createdAt和updatedAt屬性
+    await queryInterface.bulkInsert('Restaurants', restaurantData.map(restaurant => ({ ...restaurant, createdAt: new Date(), updatedAt: new Date() })))
   },
 
   async down(queryInterface, Sequelize) {
