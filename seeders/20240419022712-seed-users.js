@@ -1,6 +1,7 @@
 'use strict';
 
-const userData = require('../public/jsons/user.json').results //取得餐廳原始靜態資料
+//取得user原始靜態資料
+const userData = require('../public/jsons/user.json').results
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {

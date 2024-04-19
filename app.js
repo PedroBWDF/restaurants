@@ -1,5 +1,7 @@
 const express = require('express')
 const { engine } = require('express-handlebars')
+const flash = require('connect-flash')
+const session = require('express-session')
 const app = express()
 const port = 3000
 const methodOverride = require('method-override')
@@ -16,6 +18,12 @@ app.set('views', './views');
 
 app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
+app.use(session({
+  secret: 'ThisIsSecret',
+  resave: false,
+  saveUninitialized: false
+}))
+app.use(flash())
 
 //根據express文件，載入餐廳json靜態資料
 app.use(express.static('public'))
