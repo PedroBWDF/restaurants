@@ -3,6 +3,12 @@ const { engine } = require('express-handlebars')
 const flash = require('connect-flash')
 const session = require('express-session')
 const app = express()
+
+if (process.env.NODE_ENV === 'development') {
+  require('dotenv').config()
+}
+console.log('env', process.env.NODE_ENV)
+
 const port = 3000
 const methodOverride = require('method-override')
 // 引用路由器
@@ -22,7 +28,7 @@ app.set('views', './views');
 app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
 app.use(session({
-  secret: 'ThisIsSecret',
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false
 }))
