@@ -35,12 +35,19 @@ passport.serializeUser((user, done) => {
   return done(null, { id, name, email })
 })
 
+//第一個參數user為serialize所存到session的資料
+passport.deserializeUser((user, done) => {
+  //passport會把指定取出的資料放在req.user供使用
+  done(null, { id: user.id })
+})
+
 // 準備引入路由模組
 const restaurants = require('./restaurants')
 const users = require('./users')
+const authHandler = require('../middlewares/auth-handler')
 
-//第一個參數以'/restaurants'作為根路徑，所有導向'/restaurants'的請求都會再分發至第二個參數'restaurants'的文件
-router.use('/restaurants', restaurants)
+//第一個參數以'/restaurants'作為根路徑，第二個參數用auth middleware檢查登入狀態，再來導向'/restaurants'的請求都會再分發至第三個參數'restaurants'的文件
+router.use('/restaurants', authHandler, restaurants)
 router.use('/users', users)
 
 router.get('/', (req, res) => {
@@ -68,7 +75,13 @@ router.post('/login', (req, res) => {
 })
 
 router.post('/logout', (req, res) => {
-  return res.send('logout')
+  req.logout((error) => {
+    if (error) {
+      next(error)
+    }
+
+    return res.redirect('/login')
+  })
 })
 
 // 匯出路由器

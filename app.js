@@ -28,6 +28,7 @@ app.use(session({
 }))
 app.use(flash())
 app.use(passport.initialize())
+app.use(passport.session())
 app.use(messageHandler)
 
 //根據express文件，載入餐廳json靜態資料
