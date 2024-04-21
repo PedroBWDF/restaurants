@@ -4,6 +4,7 @@ const router = express.Router()
 
 const passport = require('passport')
 const LocalStrategy = require('passport-local')
+const bcrypt = require('bcryptjs')
 
 const db = require('../models')
 const User = db.User
@@ -16,11 +17,18 @@ passport.use(new LocalStrategy({ usernameField: 'email' }, (username, password, 
     raw: true
   })
     .then((user) => {
-      if (!user || user.password !== password) {
+      if (!user) {
         return done(null, false, { message: 'email 或密碼錯誤' })
       }
-      //第一個參數因沒有錯誤所以為null，第二個參數(user)將驗證過的user資料物件儲存在session中
-      return done(null, user)
+
+      return bcrypt.compare(password, user.password)
+        .then((isMatch) => {
+          if (!isMatch) {
+            return done(null, false, { message: 'email 或密碼錯誤' })
+          }
+        //第一個參數因沒有錯誤所以為null，第二個參數(user)將驗證過的user資料物件儲存在session中
+        return done(null, user)
+        })
     })
     .catch((error) => {
       error.errorMessage = '登入失敗'
