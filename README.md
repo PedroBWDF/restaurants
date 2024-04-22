@@ -26,6 +26,8 @@
 
 ## Environment 環境
 Node.js
+需先設定環境變數為development，在終端機輸入export NODE_ENV=development
+
 
 ## Installation 安裝
 開啟終端機(Terminal)並進到專案路徑，執行以下指令：
@@ -37,6 +39,10 @@ git clone https://github.com/PedroBWDF/restaurants.git
 cd restaurants  # 切至專案資料夾
 npm install  # 安裝套件
 ```
+需先設定環境變數為development，在終端機輸入
+```bash
+export NODE_ENV=development
+```bash
 執行程式
 ```bash
 npm run dev
