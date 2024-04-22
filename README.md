@@ -42,7 +42,7 @@ npm install  # 安裝套件
 需先設定環境變數為development，在終端機輸入
 ```bash
 export NODE_ENV=development
-```bash
+```
 執行程式
 ```bash
 npm run dev
