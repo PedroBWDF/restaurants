@@ -11,15 +11,12 @@ console.log('env', process.env.NODE_ENV)
 
 const port = 3000
 const methodOverride = require('method-override')
+//引用passport file
+const passport = require('./config/passport')
 // 引用路由器
 const router = require('./routes')
-const passport = require('passport')
 const messageHandler = require('./middlewares/message-handler')
 const errorHandler = require('./middlewares/error-handler')
-
-
-const db = require('./models')
-const Restaurant = db.Restaurant
 
 app.engine('.hbs', engine({ extname: '.hbs' }))
 app.set('view engine', '.hbs');
