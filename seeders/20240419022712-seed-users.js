@@ -1,7 +1,7 @@
 'use strict';
 
 const bcrypt = require('bcryptjs');
-//取得user原始靜態資料
+//取得user原始靜態資料(密碼hash之後這段沒使用到)
 const userData = require('../public/jsons/user.json').results
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
