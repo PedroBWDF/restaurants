@@ -141,7 +141,7 @@
 
 'use strict';
 
-const restaurantData = require('../public/jsons/restaurant.json').results //取得餐廳原始靜態資料
+const restaurantData = require('../data/jsons/restaurant.json').results //取得餐廳原始靜態資料
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
